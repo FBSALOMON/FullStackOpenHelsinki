@@ -34,14 +34,23 @@ const App = () => {
         persons.some(person => person.name === personObject.name) ? updateContact(personObject)
             : personService
                 .create(personObject)
-                .then(returnPersons => {
-                    setPersons(persons.concat(returnPersons))
+                .then(returnPerson => {
+                    setPersons(persons.concat(returnPerson))
                     setNewName('')
                     setNewNumber('')
                     setFilter('')
                     setMessage({
-                        text: `Added ${returnPersons.name}`,
-                        style: `messageCreate`
+                        text: `Added ${returnPerson.name}`,
+                        style: `messageSuccess`
+                    })
+                    setTimeout(() => {
+                        setMessage(null)
+                    }, 5000)
+                })
+                .catch(error => {
+                    setMessage({
+                        text: `${error.response.data.error}`,
+                        style: `messageError`
                     })
                     setTimeout(() => {
                         setMessage(null)
@@ -62,7 +71,7 @@ const App = () => {
                     setFilter('')
                     setMessage({
                         text: `Number of ${returnPerson.name} has been updated`,
-                        style: `messageCreate`
+                        style: `messageSuccess`
                     })
                     setTimeout(() => {
                         setMessage(null)
@@ -71,7 +80,7 @@ const App = () => {
                 .catch(() => {
                     setMessage({
                         text: `Information of ${personObject.name} has already been removed from server`,
-                        style: `messageDelete`
+                        style: `messageError`
                     })
                     setTimeout(() => {
                         setMessage(null)
@@ -94,7 +103,7 @@ const App = () => {
                 .catch(() => {
                     setMessage({
                         text: `Information of ${personObject.name} has already been removed from server`,
-                        style: `messageDelete`
+                        style: `messageError`
                     })
                     setTimeout(() => {
                         setMessage(null)

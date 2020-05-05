@@ -32,7 +32,7 @@ li {
     font-size: 15px;
 }
 
-.messageCreate {
+.messageSuccess {
     color: #17FF59;
     font-style: italic;
     font-size: 16px;
@@ -40,7 +40,7 @@ li {
     background-color: gray;
 }
 
-.messageDelete {
+.messageError {
     color: #FF6161;
     font-style: italic;
     font-size: 16px;
