@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react'
-import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
-import BlogForm from './components/BlogForm'
+import LoginForm from './components/LoginForm'
+import BlogSection from './components/BlogSection'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [notification, setNotification ] = useState(null)
   const [newAuthor, setNewAuhor] = useState('')
   const [newTitle, setNewTitle] = useState('')
   const [newUrl, setNewUrl] = useState('')
@@ -20,6 +20,13 @@ const App = () => {
       setBlogs( blogs )
     )  
   }, [])
+
+  const notifyWith = (message, type='success') => {
+    setNotification({ message, type })
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
+  }
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -44,11 +51,9 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+      notifyWith(`Welcome ${user.name}`)
     } catch (exception) {
-      setErrorMessage('Wrong credentials')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      notifyWith('Wrong username or password', 'error')
     }
   }
 
@@ -56,33 +61,6 @@ const App = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
   }
-
-  const loginForm = () => (
-    <div>
-      <h2>Log in to application</h2>
-      <form onSubmit={handleLogin}>
-          <div>
-            username
-              <input
-              type="text"
-              value={username}
-              name="Username"
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            password
-              <input
-              type="password"
-              value={password}
-              name="Password"
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <button type="submit">login</button>
-        </form>
-    </div>
-  )
 
   const handleNewTitle = (event) => {
     setNewTitle(event.target.value)
@@ -110,38 +88,43 @@ const App = () => {
       setNewTitle('')
       setNewAuhor('')
       setNewUrl('')
+      notifyWith(`a new blog ${newblog.title} by ${newblog.author} added`)
 
     } catch (exception) {
-      setErrorMessage('Please check the information again')
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
+      notifyWith('Please check the information again', 'error')
     }
-
   }
 
-  const blogForm = () => (
-    <div>
-      <h2>blogs</h2>
+  if (user===null) {
+    return (
       <div>
-        <p>{user.username} logged in <button onClick={() => handleLogout()}>Logout</button> </p>
+        <Notification notification={notification} />
+        <LoginForm 
+          username={username} 
+          setUsername={setUsername} 
+          password={password} 
+          setPassword={setPassword} 
+          handleLogin={handleLogin} 
+        />
       </div>
-      <div>
-        <BlogForm 
-        newTitle={newTitle} newAuthor={newAuthor} newUrl={newUrl} handleNewTitle={handleNewTitle} handleNewAuthor={handleNewAuthor} handleNewUrl={handleNewUrl} addBlog={addBlog} />
-      </div>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )}
-    </div>
-  )
+    )
+  }
 
   return (
     <div>
-      <Notification message={errorMessage} />
-    
-      {user === null && loginForm()}
-      {user !== null && blogForm()}
+      <Notification notification={notification} />
+      <BlogSection  
+        user={user} 
+        handleLogout={handleLogout} 
+        newTitle={newTitle} 
+        newAuthor={newAuthor} 
+        newUrl={newUrl} 
+        handleNewTitle={handleNewTitle} 
+        handleNewAuthor={handleNewAuthor} 
+        handleNewUrl={handleNewUrl} 
+        addBlog={addBlog} 
+        blogs={blogs}
+      />
     </div>
   )
 }
