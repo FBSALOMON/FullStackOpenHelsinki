@@ -3,17 +3,16 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
 import LoginForm from './components/LoginForm'
-import BlogSection from './components/BlogSection'
+import Blog from './components/Blog'
+import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
+
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('') 
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [notification, setNotification ] = useState(null)
-  const [newAuthor, setNewAuhor] = useState('')
-  const [newTitle, setNewTitle] = useState('')
-  const [newUrl, setNewUrl] = useState('')
+  const blogFormRef = React.createRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -37,20 +36,14 @@ const App = () => {
     }
   }, [])
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
+  const handleLogin = async (userObject) => {
     try {
-      const user = await loginService.login({
-        username, password,
-      })
-
+      const user = await loginService.login(userObject)
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
       )
       blogService.setToken(user.token)
       setUser(user)
-      setUsername('')
-      setPassword('')
       notifyWith(`Welcome ${user.name}`)
     } catch (exception) {
       notifyWith('Wrong username or password', 'error')
@@ -62,34 +55,12 @@ const App = () => {
     setUser(null)
   }
 
-  const handleNewTitle = (event) => {
-    setNewTitle(event.target.value)
-  }
-
-  const handleNewAuthor = (event) => {
-    setNewAuhor(event.target.value)
-  }
-
-  const handleNewUrl = (event) => {
-    setNewUrl(event.target.value)
-  }
-
-  const addBlog = async (event) => {
-    event.preventDefault()
-    const blogObject = {
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl
-    }
+  const addBlog = async (blogObject) => {
+    blogFormRef.current.toggleVisibility()
     try {
-      const newblog = await blogService.create(blogObject)
-
-      setBlogs(blogs.concat(newblog))
-      setNewTitle('')
-      setNewAuhor('')
-      setNewUrl('')
-      notifyWith(`a new blog ${newblog.title} by ${newblog.author} added`)
-
+      const newBlog = await blogService.create(blogObject)
+      setBlogs(blogs.concat(newBlog))
+      notifyWith(`a new blog ${newBlog.title} by ${newBlog.author} added`)
     } catch (exception) {
       notifyWith('Please check the information again', 'error')
     }
@@ -99,13 +70,9 @@ const App = () => {
     return (
       <div>
         <Notification notification={notification} />
-        <LoginForm 
-          username={username} 
-          setUsername={setUsername} 
-          password={password} 
-          setPassword={setPassword} 
-          handleLogin={handleLogin} 
-        />
+          <LoginForm 
+            userObject={handleLogin} 
+          />
       </div>
     )
   }
@@ -113,18 +80,22 @@ const App = () => {
   return (
     <div>
       <Notification notification={notification} />
-      <BlogSection  
-        user={user} 
-        handleLogout={handleLogout} 
-        newTitle={newTitle} 
-        newAuthor={newAuthor} 
-        newUrl={newUrl} 
-        handleNewTitle={handleNewTitle} 
-        handleNewAuthor={handleNewAuthor} 
-        handleNewUrl={handleNewUrl} 
-        addBlog={addBlog} 
-        blogs={blogs}
-      />
+      <div>
+        <h2>blogs</h2>
+        <div>
+          <p>{user.name} logged in <button onClick={() => handleLogout()}>Logout</button> </p>
+        </div>
+        <div>
+          <Togglable buttonLabel='new blog' ref={blogFormRef}>
+            <BlogForm 
+                createBlog={addBlog}
+            />
+          </Togglable>
+        </div>
+          {blogs.map(blog =>
+              <Blog key={blog.id} blog={blog} />
+          )}
+      </div>
     </div>
   )
 }
