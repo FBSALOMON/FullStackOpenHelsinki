@@ -77,11 +77,11 @@ const App = () => {
   const updateLike = async (blogObject) => {
     try {
       const updatedBlog = await blogService.put(blogObject)
-      const updatedBlogs = blogs
-                            .filter(blog => blog.id !== updatedBlog.id)
-                            .concat(updatedBlog)
-      sortBlogsByLikes(updatedBlogs)
-      setBlogs(updatedBlogs)
+      const updatedBlogUser = blogs.find(blog => blog.id === updatedBlog.id).user
+      updatedBlog.user = updatedBlogUser
+      const blogsToUpdate = blogs.filter(blog => blog.id !== updatedBlog.id).concat(updatedBlog)
+      sortBlogsByLikes(blogsToUpdate)
+      setBlogs(blogsToUpdate)
       notifyWith(`You liked ${updatedBlog.title} by ${updatedBlog.author}!`)
     } catch (exception) {
       notifyWith('Please try again', 'error')
