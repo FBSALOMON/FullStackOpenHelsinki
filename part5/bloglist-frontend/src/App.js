@@ -66,6 +66,19 @@ const App = () => {
     }
   }
 
+  const updateLike = async (blogObject) => {
+    try {
+      const updatedBlog = await blogService.put(blogObject)
+      const updatedBlogs = blogs
+                            .filter(blog => blog.id !== updatedBlog.id)
+                            .concat(updatedBlog)
+      setBlogs(updatedBlogs)
+      notifyWith(`You liked ${updatedBlog.title} by ${updatedBlog.author}!`)
+    } catch (exception) {
+      notifyWith('Please try again', 'error')
+    }
+  }
+
   if (user===null) {
     return (
       <div>
@@ -93,7 +106,7 @@ const App = () => {
           </Togglable>
         </div>
           {blogs.map(blog =>
-              <Blog key={blog.id} blog={blog} />
+              <Blog key={blog.id} blog={blog} updateLike={updateLike} />
           )}
       </div>
     </div>
