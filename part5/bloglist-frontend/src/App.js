@@ -88,6 +88,21 @@ const App = () => {
     }
   }
 
+  const deleteBlog = async (blogObject) => {
+    try {
+      const result = window.confirm(`Remove blog ${blogObject.title} by ${blogObject.author} ?`);
+      if(result) {
+        await blogService.remove(blogObject.id)
+        const blogsUpdated = blogs.filter(blog => blog.id !== blogObject.id)
+        sortBlogsByLikes(blogsUpdated)
+        setBlogs(blogsUpdated)
+        notifyWith(`Blog ${blogObject.title} by ${blogObject.author} has been removed`)
+      }
+    } catch (exception) {
+      notifyWith('Something went wrong please try again', 'error')
+    }
+  }
+
   if (user===null) {
     return (
       <div>
@@ -115,7 +130,7 @@ const App = () => {
           </Togglable>
         </div>
           {blogs.map(blog =>
-              <Blog key={blog.id} blog={blog} updateLike={updateLike} />
+              <Blog key={blog.id} blog={blog} updateLike={updateLike} loggedUsername={user.username} deleteBlog={deleteBlog} />
           )}
       </div>
     </div>

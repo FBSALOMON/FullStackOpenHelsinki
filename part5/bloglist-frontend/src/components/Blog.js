@@ -1,13 +1,14 @@
 import React, {useState} from 'react'
 
-const Blog = ({ blog, updateLike }) => {
+const Blog = ({ blog, updateLike, loggedUsername, deleteBlog }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
     border: 'solid',
     borderWidth: 1,
     marginBottom: 5,
-    listStyle: 'none'
+    listStyle: 'none',
+    lineHeight: 0
   }
 
   const [visible, setVisible] = useState(false)
@@ -19,13 +20,13 @@ const Blog = ({ blog, updateLike }) => {
     setVisible(!visible)
   }
 
-  const update = (event) => {
+  const update = () => {
     updateLike({
       ...blog, 
       user: blog.user.id, 
       likes: blog.likes + 1
     })
-}
+  }
 
   return (
     <li style={blogStyle}>
@@ -37,6 +38,7 @@ const Blog = ({ blog, updateLike }) => {
         <p>{blog.url}</p>
         <p>{blog.likes}<button onClick={update}>like</button></p>
         <p>{blog.user.name}</p>
+        {loggedUsername === blog.user.username ? <button onClick={() => deleteBlog(blog)}>remove</button> : ''}
       </div>
     </li>
   )
