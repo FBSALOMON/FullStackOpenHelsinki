@@ -14,10 +14,18 @@ const App = () => {
   const [notification, setNotification ] = useState(null)
   const blogFormRef = React.createRef()
 
+  const sortBlogsByLikes = (blogs) => {
+    blogs.sort((a,b) => b.likes - a.likes)
+    return blogs
+  }
+  
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+    async function fetchData() {
+      const blogs = await blogService.getAll()
+      sortBlogsByLikes(blogs)
+      setBlogs(blogs)
+    }
+    fetchData()
   }, [])
 
   const notifyWith = (message, type='success') => {
@@ -72,6 +80,7 @@ const App = () => {
       const updatedBlogs = blogs
                             .filter(blog => blog.id !== updatedBlog.id)
                             .concat(updatedBlog)
+      sortBlogsByLikes(updatedBlogs)
       setBlogs(updatedBlogs)
       notifyWith(`You liked ${updatedBlog.title} by ${updatedBlog.author}!`)
     } catch (exception) {
