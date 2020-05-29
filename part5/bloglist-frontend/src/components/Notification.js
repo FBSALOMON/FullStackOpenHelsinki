@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const Notification = ({ notification }) => {
   if (notification === null) {
@@ -19,6 +20,10 @@ const Notification = ({ notification }) => {
       {notification.message}
     </div>
   )
+}
+
+Notification.prototype = {
+  notification : PropTypes.object.isRequired
 }
 
 export default Notification

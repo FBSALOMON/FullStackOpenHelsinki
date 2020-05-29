@@ -1,8 +1,8 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
-
-const LoginForm = ({userObject}) => {
-  const [username, setUsername] = useState('') 
+const LoginForm = ({ userObject }) => {
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
   const handleLogin = (event) => {
@@ -12,34 +12,38 @@ const LoginForm = ({userObject}) => {
     })
     setUsername('')
     setPassword('')
+  }
+
+  return (
+    <div>
+      <h2>Log in to application</h2>
+      <form onSubmit={handleLogin}>
+        <div>
+                username
+          <input
+            type="text"
+            value={username}
+            name="Username"
+            onChange={({ target }) => setUsername(target.value)}
+          />
+        </div>
+        <div>
+                password
+          <input
+            type="password"
+            value={password}
+            name="Password"
+            onChange={({ target }) => setPassword(target.value)}
+          />
+        </div>
+        <button type="submit">login</button>
+      </form>
+    </div>
+  )
 }
 
-    return (
-        <div>
-          <h2>Log in to application</h2>
-          <form onSubmit={handleLogin}>
-              <div>
-                username
-                  <input
-                  type="text"
-                  value={username}
-                  name="Username"
-                  onChange={({ target }) => setUsername(target.value)}
-                />
-              </div>
-              <div>
-                password
-                  <input
-                  type="password"
-                  value={password}
-                  name="Password"
-                  onChange={({ target }) => setPassword(target.value)}
-                />
-              </div>
-              <button type="submit">login</button>
-            </form>
-        </div>
-    )
+LoginForm.prototype = {
+  userObject: PropTypes.object.isRequired
 }
 
 export default LoginForm

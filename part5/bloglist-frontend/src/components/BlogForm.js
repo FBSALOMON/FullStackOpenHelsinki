@@ -1,63 +1,68 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
 const BlogForm = ({ createBlog }) => {
-    const [newAuthor, setNewAuhor] = useState('')
-    const [newTitle, setNewTitle] = useState('')
-    const [newUrl, setNewUrl] = useState('')
+  const [newAuthor, setNewAuhor] = useState('')
+  const [newTitle, setNewTitle] = useState('')
+  const [newUrl, setNewUrl] = useState('')
 
-    const handleNewTitle = (event) => {
-        setNewTitle(event.target.value)
-    }
-    
-    const handleNewAuthor = (event) => {
-        setNewAuhor(event.target.value)
-    }
-    
-    const handleNewUrl = (event) => {
-        setNewUrl(event.target.value)
-    }
+  const handleNewTitle = (event) => {
+    setNewTitle(event.target.value)
+  }
 
-    const addBlog = (event) => {
-        event.preventDefault()
-        createBlog({
-            author: newAuthor,
-            title: newTitle,
-            url: newUrl
-        })
+  const handleNewAuthor = (event) => {
+    setNewAuhor(event.target.value)
+  }
 
-        setNewAuhor('')
-        setNewTitle('')
-        setNewUrl('')
-    }
-      
-    return (
-        <form onSubmit={addBlog}>
-            <div>
+  const handleNewUrl = (event) => {
+    setNewUrl(event.target.value)
+  }
+
+  const addBlog = (event) => {
+    event.preventDefault()
+    createBlog({
+      author: newAuthor,
+      title: newTitle,
+      url: newUrl
+    })
+
+    setNewAuhor('')
+    setNewTitle('')
+    setNewUrl('')
+  }
+
+  return (
+    <form onSubmit={addBlog}>
+      <div>
                 title:
-                    <input
-                    value={newTitle}
-                    onChange={handleNewTitle}
-                />
-            </div>
-            <div>
+        <input
+          value={newTitle}
+          onChange={handleNewTitle}
+        />
+      </div>
+      <div>
                 author:
-                    <input
-                    value={newAuthor}
-                    onChange={handleNewAuthor}
-                />
-            </div>
-            <div>
+        <input
+          value={newAuthor}
+          onChange={handleNewAuthor}
+        />
+      </div>
+      <div>
                 url:
-                    <input
-                    value={newUrl}
-                    onChange={handleNewUrl}
-                />
-            </div>
-            <div>
-                <button type="submit">create</button>
-            </div>
-        </form>
-    )
+        <input
+          value={newUrl}
+          onChange={handleNewUrl}
+        />
+      </div>
+      <div>
+        <button type="submit">create</button>
+      </div>
+    </form>
+  )
+}
+
+BlogForm.propTypes = {
+  createBlog: PropTypes.func.isRequired
 }
 
 export default BlogForm
