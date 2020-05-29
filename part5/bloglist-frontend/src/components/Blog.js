@@ -31,7 +31,7 @@ const Blog = ({ blog, updateLike, loggedUsername, deleteBlog }) => {
 
   return (
     <li style={blogStyle}>
-      <div style={hideWhenVisible}>
+      <div style={hideWhenVisible} className='DefaultBlogInformation'>
         <p>{blog.title} {blog.author}<button onClick={toggleVisibility}>view</button></p>
       </div>
       <div style={showWhenVisible}>
