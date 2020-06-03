@@ -29,15 +29,9 @@ describe('Blog app', function() {
       cy.get('#password').type('wrongPassword')
       cy.get('#login-button').click()
 
-      cy.contains('Wrong username or password')
-    })
-
-    it('unsuccessful login is displayed red', function() {
-      cy.get('#username').type('wrongUser')
-      cy.get('#password').type('wrongPassword')
-      cy.get('#login-button').click()
-
-      cy.get('#notification').should('have.css', 'color', 'rgb(255, 0, 0)')
+      cy.get('.notification')
+        .contains('Wrong username or password')
+        .and('have.css', 'color', 'rgb(255, 0, 0)')
     })
   })
 })
