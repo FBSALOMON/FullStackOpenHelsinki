@@ -1,5 +1,3 @@
-import { func } from "prop-types"
-
 describe('Blog app', function() {
   beforeEach(function() {
     cy.request('POST', 'http://localhost:3001/api/testing/reset')
@@ -65,6 +63,26 @@ describe('Blog app', function() {
         cy.contains('view').click()
         cy.contains('like').click()
         cy.get('.blogLikes').should('contain', 1)
+      })
+
+      it('A blog can be deleted by creator', function() {
+        cy.contains('view').click()
+        cy.contains('remove').click()
+        cy.get('#blogList').should('not.contain', 'TitleTest')
+        cy.get('.notification').should('contain', 'Blog TitleTest by AuthorTest has been removed').and('have.css', 'color', 'rgb(0, 128, 0)')
+      })
+
+      it('A blog can only be deleted by creator', function() {
+        const anotherUser = {
+          name: 'Another User',
+          username: 'auser',
+          password: 'secret'
+        }
+        cy.request('POST', 'http://localhost:3001/api/users/', anotherUser)
+        cy.login({ username: 'auser', password: 'secret' })
+
+        cy.contains('view').click()
+        cy.get('#blogList').should('not.contain', 'remove')
       })
     })
   })
