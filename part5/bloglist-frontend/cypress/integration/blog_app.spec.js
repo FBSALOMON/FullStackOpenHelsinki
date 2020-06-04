@@ -84,6 +84,22 @@ describe('Blog app', function() {
         cy.contains('view').click()
         cy.get('#blogList').should('not.contain', 'remove')
       })
+      describe('After multiple blogs are created', function() {
+        beforeEach(function() {
+          cy.createBlog({ title: 'TitleTest2', author: 'AuthorTest2', url: 'www.test.com2', likes: 4 })
+          cy.createBlog({ title: 'TitleTest3', author: 'AuthorTest3', url: 'www.test.com3', likes: 5 })
+          cy.createBlog({ title: 'TitleTest4', author: 'AuthorTest4', url: 'www.test.com4', likes: 4 })
+        })
+
+        it('Blogs are ordered by likes', function() {
+          let lastLikesNumber = Number.MAX_SAFE_INTEGER
+          cy.get('.blogLikes').each((blog) => {
+            const likes = parseInt(blog.children()[0].textContent)
+            expect(lastLikesNumber).to.be.least(likes)
+            lastLikesNumber =  likes
+          })
+        })
+      })
     })
   })
 })
