@@ -1,3 +1,5 @@
+import { func } from "prop-types"
+
 describe('Blog app', function() {
   beforeEach(function() {
     cy.request('POST', 'http://localhost:3001/api/testing/reset')
@@ -62,6 +64,7 @@ describe('Blog app', function() {
       it('A blog can be liked', function() {
         cy.contains('view').click()
         cy.contains('like').click()
+        cy.get('.blogLikes').should('contain', 1)
       })
     })
   })

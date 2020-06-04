@@ -12,6 +12,10 @@ const Blog = ({ blog, updateLike, loggedUsername, deleteBlog }) => {
     lineHeight: 0
   }
 
+  const blogLikesStyle = {
+    display: 'flex',
+  }
+
   const [visible, setVisible] = useState(false)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
@@ -37,7 +41,10 @@ const Blog = ({ blog, updateLike, loggedUsername, deleteBlog }) => {
       <div style={showWhenVisible} className='FullBlogInformation'>
         <p>{blog.title} {blog.author}<button onClick={toggleVisibility}>hide</button></p>
         <p>{blog.url}</p>
-        <p>{blog.likes}<button onClick={update}>like</button></p>
+        <div style={blogLikesStyle}>
+          <div className='blogLikes'><p>{blog.likes}</p></div>
+          <button onClick={update}>like</button>
+        </div>
         <p>{blog.user.name}</p>
         {loggedUsername === blog.user.username ? <button onClick={() => deleteBlog(blog)}>remove</button> : ''}
       </div>
