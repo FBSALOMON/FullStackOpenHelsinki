@@ -116,22 +116,22 @@ const App = () => {
   return (
     <div>
       <Notification notification={notification} />
+      <h2>blogs</h2>
       <div>
-        <h2>blogs</h2>
-        <div>
-          <p>{user.name} logged in <button onClick={() => handleLogout()}>Logout</button> </p>
-        </div>
-        <div>
-          <Togglable buttonLabel='new blog' ref={blogFormRef}>
-            <BlogForm
-              createBlog={addBlog}
-            />
-          </Togglable>
-        </div>
+        <p>{user.name} logged in <button onClick={() => handleLogout()}>Logout</button> </p>
+      </div>
+      <div>
+        <Togglable buttonId='newBlog-button' buttonLabel='new blog' ref={blogFormRef}>
+          <BlogForm
+            createBlog={addBlog}
+          />
+        </Togglable>
+      </div>
+      <ul id='blogList'>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} updateLike={updateLike} loggedUsername={user.username} deleteBlog={deleteBlog} />
         )}
-      </div>
+      </ul>
     </div>
   )
 }
